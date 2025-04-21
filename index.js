@@ -48,6 +48,8 @@ window.addEventListener('load', function () {
   cardsContainer.style.justifyContent = 'center';
   cardsContainer.style.margin = '2rem';
 
+  const flipCardAudio = new Audio('assets/flip-card.mp3');
+
   COLORS.forEach((color) => {
     NUMBERS.forEach((number) => {
       const cardName = `${number} of ${color}`;
@@ -64,6 +66,7 @@ window.addEventListener('load', function () {
       cardsContainer.appendChild(img);
 
       img.addEventListener('click', () => {
+        void flipCardAudio.play();
         if (isUsed.has(cardName)) {
           unhideCard(cardName, img);
         } else {
