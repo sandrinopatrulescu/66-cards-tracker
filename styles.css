@@ -1,3 +1,17 @@
 body {
     background-color: #46c878;
 }
+
+.card:hover {
+    opacity: 0.6;
+    cursor: pointer;
+    margin-left: 2px;
+}
+
+.cardHidden {
+    opacity: 0.2;
+}
+
+.cardHidden:hover {
+    opacity: 0.4;
+}
