@@ -1,5 +1,8 @@
 const COLORS = ['hearts', 'bells', 'leaves', 'acorns'];
 const NUMBERS = ['9', '2', '3', '4', '10', '11'];
+
+const NUMBER_OF_CARDS = COLORS.length * NUMBERS.length;
+
 const isUsed = new Set();
 
 function rgbToHex(rgbString) {
@@ -12,7 +15,11 @@ function rgbToHex(rgbString) {
 
 function updateAll(unhideAllButton) {
   unhideAllButton.disabled = isUsed.size === 0;
-  unhideAllButton.style.cursor = unhideAllButton.disabled ? 'not-allowed' : 'pointer';
+  unhideAllButton.style.cursor = unhideAllButton.disabled ? 'not-allowed' : 'pointer'
+
+  document.getElementById('handsPlayed').value = `${isUsed.size} / 4 = ${isUsed.size / 4}`;
+  const cardsLeft = NUMBER_OF_CARDS - isUsed.size;
+  document.getElementById('handsLeft').value = `${cardsLeft} / 4 = ${cardsLeft / 4}`;
 }
 
 function getHideCardString(cardName) {

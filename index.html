@@ -11,13 +11,23 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div style="display: flex">
-    <button id="unhideAll">Unhide all</button>
-
+<div style="display: flex; align-items: center; gap: 1rem;">
     <div>
         <label for="backgroundColorPicker">Background</label>
         <input type="color" id="backgroundColorPicker">
     </div>
+
+    <div>
+        <label for="handsPlayed">Cards/Hands played</label>
+        <input type="text" id="handsPlayed" readonly style="width: 5rem;">
+    </div>
+
+    <div>
+        <label for="handsLeft">Cards/Hands left</label>
+        <input type="text" id="handsLeft" readonly style="width: 5rem;">
+    </div>
+
+    <button id="unhideAll">Unhide all</button>
 </div>
 <div id="cards"></div>
 </body>
