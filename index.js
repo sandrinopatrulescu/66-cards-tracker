@@ -2,9 +2,17 @@ const COLORS = ['hearts', 'bells', 'leaves', 'acorns'];
 const NUMBERS = ['9', '2', '3', '4', '10', '11'];
 const isUsed = new Set();
 
-function updateUnhideAllButton(button) {
-  button.disabled = isUsed.size === 0;
-  button.style.cursor = button.disabled ? 'not-allowed' : 'pointer';
+function rgbToHex(rgbString) {
+  const nums = rgbString.match(/\d+/g).map(Number);
+  return '#' + nums.map(x => {
+    const hex = (x + 0).toString(16);
+    return hex.length === 1 ? '0' + hex : hex
+  }).join('');
+}
+
+function updateAll(unhideAllButton) {
+  unhideAllButton.disabled = isUsed.size === 0;
+  unhideAllButton.style.cursor = unhideAllButton.disabled ? 'not-allowed' : 'pointer';
 }
 
 function getHideCardString(cardName) {
@@ -27,11 +35,12 @@ window.addEventListener('load', function () {
       unhideCard(cardName);
     });
     isUsed.clear();
-    updateUnhideAllButton(unhideAllButton);
+    updateAll(unhideAllButton);
   });
-  updateUnhideAllButton(unhideAllButton);
+  updateAll(unhideAllButton);
 
   const backgroundColorPicker = document.getElementById('backgroundColorPicker');
+  backgroundColorPicker.value = rgbToHex(getComputedStyle(document.body).getPropertyValue('background-color'));
   backgroundColorPicker.addEventListener('input', (event) => {
     document.body.style.backgroundColor = event.target.value;
   });
@@ -74,7 +83,7 @@ window.addEventListener('load', function () {
           img.classList.add('cardHidden');
           img.title = `Click to unhide ${cardName}`;
         }
-        updateUnhideAllButton(unhideAllButton);
+        updateAll(unhideAllButton);
       });
     });
   });
