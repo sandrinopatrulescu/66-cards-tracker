@@ -3,6 +3,15 @@ const NUMBERS = ['9', '2', '3', '4', '10', '11'];
 
 const NUMBER_OF_CARDS = COLORS.length * NUMBERS.length;
 
+const HANDS_COLORS = {
+  1: '#FF6B6B',
+  2: '#02fded',
+  3: '#f8d402',
+  4: '#1A535C',
+  5: '#f600b2',
+  6: '#5C33F6',
+}
+
 const isUsed = new Set();
 
 function rgbToHex(rgbString) {
@@ -34,6 +43,7 @@ function unhideCard(cardName, img = undefined) {
   img.classList.remove('cardHidden');
   img.title = getHideCardString(cardName);
   img.style.border = '0.25rem solid transparent';
+  document.getElementById(`${cardName} handNumber`)?.remove();
 }
 
 window.addEventListener('load', function () {
@@ -77,6 +87,8 @@ window.addEventListener('load', function () {
 
       imageContainer.id = cardName + ' container';
       imageContainer.style.position = 'relative';
+      imageContainer.style.display = 'inline-block';
+      imageContainer.style.border = '0.25rem solid trasnparent';
 
       img.id = cardName;
       img.classList.add('card');
@@ -84,6 +96,9 @@ window.addEventListener('load', function () {
       img.width = imgWidth;
       img.alt = `Card ${cardName}`;
       img.title = hideCardString;
+      img.style.display = 'block';
+      img.style.width = '100%';
+      img.style.height = 'auto';
       imageContainer.appendChild(img);
       cardsContainer.appendChild(imageContainer);
       unhideCard(cardName, img);
@@ -94,10 +109,25 @@ window.addEventListener('load', function () {
         if (isUsed.has(cardName)) {
           unhideCard(cardName, img);
         } else {
+
           isUsed.add(cardName);
           img.classList.add('cardHidden');
           img.title = `Click to unhide ${cardName}`;
-          img.style.border = '0.25rem solid black';
+
+          const handsPlayed = isUsed.size / 4;
+          const handsPlayedRounded = Math.ceil(handsPlayed);
+          img.style.border = `0.25rem solid ${HANDS_COLORS[handsPlayedRounded]}`;
+
+          const handNumberOverlay = document.createElement('div');
+
+          handNumberOverlay.id = `${cardName} handNumber`;
+          handNumberOverlay.innerText = `Hand ${handsPlayedRounded} (${handsPlayed})`;
+          handNumberOverlay.style.position = 'absolute';
+          handNumberOverlay.style.bottom = '0.5rem';
+          handNumberOverlay.style.left = '0.5rem';
+          handNumberOverlay.style.fontSize = '0.75rem';
+
+          imageContainer.appendChild(handNumberOverlay);
         }
         updateAll(unhideAllButton);
       });
