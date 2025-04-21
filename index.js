@@ -23,7 +23,7 @@ function updateAll(unhideAllButton) {
 }
 
 function getHideCardString(cardName) {
-  return `Click to unhide ${cardName}`;
+  return `Click to hide ${cardName}`;
 }
 
 function unhideCard(cardName, img = undefined) {
@@ -33,6 +33,7 @@ function unhideCard(cardName, img = undefined) {
   isUsed.delete(cardName);
   img.classList.remove('cardHidden');
   img.title = getHideCardString(cardName);
+  img.style.border = '0.25rem solid transparent';
 }
 
 window.addEventListener('load', function () {
@@ -71,7 +72,11 @@ window.addEventListener('load', function () {
       const cardName = `${number} of ${color}`;
       const hideCardString = `Click to hide ${cardName}`;
 
+      const imageContainer = document.createElement('div');
       const img = document.createElement('img');
+
+      imageContainer.id = cardName + ' container';
+      imageContainer.style.position = 'relative';
 
       img.id = cardName;
       img.classList.add('card');
@@ -79,16 +84,20 @@ window.addEventListener('load', function () {
       img.width = imgWidth;
       img.alt = `Card ${cardName}`;
       img.title = hideCardString;
-      cardsContainer.appendChild(img);
+      imageContainer.appendChild(img);
+      cardsContainer.appendChild(imageContainer);
+      unhideCard(cardName, img);
 
       img.addEventListener('click', () => {
         void flipCardAudio.play();
+
         if (isUsed.has(cardName)) {
           unhideCard(cardName, img);
         } else {
           isUsed.add(cardName);
           img.classList.add('cardHidden');
           img.title = `Click to unhide ${cardName}`;
+          img.style.border = '0.25rem solid black';
         }
         updateAll(unhideAllButton);
       });
