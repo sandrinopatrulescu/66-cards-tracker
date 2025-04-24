@@ -16,6 +16,12 @@ const HANDS_COLORS = {
 
 const CARD_BORDER_SIZE = "0.5rem";
 const CARD_BORDER = `${CARD_BORDER_SIZE} solid transparent`;
+const CARD_WIDTH = 110;
+
+
+const DIMENSION_WIDTHS = [NUMBERS, COLORS].map(x => x.length);
+const LANDSCAPE_WIDTH = Math.max(...DIMENSION_WIDTHS);
+const PORTRAIT_WIDTH = Math.min(...DIMENSION_WIDTHS);
 
 const isUsed = new Set();
 
@@ -27,9 +33,16 @@ function rgbToHex(rgbString) {
   }).join('');
 }
 
-function forEachCard(cardConsumer) {
-  COLORS.forEach((color) => {
-    NUMBERS.forEach((number) => {
+function forEachCard(cardConsumer, reverse = false) {
+  const layout = document.getElementById('layoutToggle').value;
+  const isLandscape = layout === 'landscape' && !reverse;
+
+  const outerArray = isLandscape ? COLORS : NUMBERS;
+  const innerArray = isLandscape ? NUMBERS : COLORS;
+
+  outerArray.forEach((outer) => {
+    innerArray.forEach((inner) => {
+      const [color, number] = isLandscape ? [outer, inner] : [inner, outer];
       cardConsumer(color, number);
     });
   })
@@ -91,6 +104,25 @@ function hideCard(cardName, img = undefined, imageContainer = undefined) {
   imageContainer.appendChild(handNumberOverlay);
 }
 
+function updateLayout(layout, cardsContainer) {
+  const cardsPerRow = layout === 'landscape' ? LANDSCAPE_WIDTH : PORTRAIT_WIDTH;
+  cardsContainer.style.gridTemplateColumns = `repeat(${cardsPerRow}, ${CARD_WIDTH}px)`;
+
+
+  //@formatter:off
+  const elementToOrderValue = (element) => layout === 'landscape'
+    ? COLORS.indexOf(element.id.split(' ')[2])
+    : NUMBERS.indexOf(element.id.split(' ')[0]);
+  //@formatter:on
+
+  const orderedCards = Array.from(cardsContainer.children)
+    .sort((a, b) => elementToOrderValue(a) - elementToOrderValue(b));
+
+  orderedCards.forEach((child) => cardsContainer.appendChild(child));
+}
+
+const flipCardAudio = new Audio('assets/flip-card.mp3');
+
 window.addEventListener('load', function () {
   const unhideAllButton = document.getElementById("unhideAll");
   unhideAllButton.addEventListener('click', () => {
@@ -109,7 +141,7 @@ window.addEventListener('load', function () {
       if (!isUsed.has(cardName)) {
         hideCard(cardName);
       }
-    });
+    }, true);
     updateAll(unhideAllButton);
   });
 
@@ -119,19 +151,19 @@ window.addEventListener('load', function () {
     document.body.style.backgroundColor = event.target.value;
   });
 
+  const layoutToggle = document.getElementById('layoutToggle');
   const cardsContainer = document.getElementById('cards');
 
-  const cardsPerRow = 6; // 4 rows of 6
-  const imgWidth = 110;
+  layoutToggle.addEventListener('change', (e) => {
+    updateLayout(e.target.value, cardsContainer);
+  });
 
   // Set container styles
   cardsContainer.style.display = 'grid';
-  cardsContainer.style.gridTemplateColumns = `repeat(${cardsPerRow}, ${imgWidth}px)`;
+  updateLayout('landscape', cardsContainer);
   cardsContainer.style.gap = '0.5rem 2rem'; // space between cards
   cardsContainer.style.justifyContent = 'center';
   cardsContainer.style.margin = '2rem';
-
-  const flipCardAudio = new Audio('assets/flip-card.mp3');
 
   forEachCard((color, number) => {
     const cardName = `${number} of ${color}`;
@@ -148,7 +180,7 @@ window.addEventListener('load', function () {
     img.id = cardName;
     img.classList.add('card');
     img.src = `assets/cards/${color}_${number}.png`;
-    img.width = imgWidth;
+    img.width = CARD_WIDTH;
     img.alt = `Card ${cardName}`;
     img.title = hideCardString;
     img.style.display = 'block';
