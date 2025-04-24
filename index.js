@@ -3,14 +3,19 @@ const NUMBERS = ['9', '2', '3', '4', '10', '11'];
 
 const NUMBER_OF_CARDS = COLORS.length * NUMBERS.length;
 
+//@formatter:off
 const HANDS_COLORS = {
-  1: '#FF6B6B',
-  2: '#02fded',
-  3: '#f8d402',
-  4: '#1A535C',
-  5: '#f600b2',
-  6: '#5C33F6',
+  1: '#FF0000',
+  2: '#FF8000',
+  3: '#00FF00',
+  4: '#00FFFF',
+  5: '#8F00FF',
+  6: '#EE88EE',
 }
+//@formatter:on
+
+const CARD_BORDER_SIZE = "0.5rem";
+const CARD_BORDER = `${CARD_BORDER_SIZE} solid transparent`;
 
 const isUsed = new Set();
 
@@ -54,7 +59,7 @@ function unhideCard(cardName, img = undefined) {
   isUsed.delete(cardName);
   img.classList.remove('cardHidden');
   img.title = getHideCardString(cardName);
-  img.style.border = '0.25rem solid transparent';
+  img.style.border = CARD_BORDER;
   document.getElementById(`${cardName} handNumber`)?.remove();
 }
 
@@ -72,7 +77,7 @@ function hideCard(cardName, img = undefined, imageContainer = undefined) {
 
   const handsPlayed = isUsed.size / 4;
   const handsPlayedRounded = Math.ceil(handsPlayed);
-  img.style.border = `0.25rem solid ${HANDS_COLORS[handsPlayedRounded]}`;
+  img.style.border = `${CARD_BORDER_SIZE} solid ${HANDS_COLORS[handsPlayedRounded]}`;
 
   const handNumberOverlay = document.createElement('div');
 
@@ -122,7 +127,7 @@ window.addEventListener('load', function () {
   // Set container styles
   cardsContainer.style.display = 'grid';
   cardsContainer.style.gridTemplateColumns = `repeat(${cardsPerRow}, ${imgWidth}px)`;
-  cardsContainer.style.gap = '1rem'; // space between cards
+  cardsContainer.style.gap = '0.5rem 2rem'; // space between cards
   cardsContainer.style.justifyContent = 'center';
   cardsContainer.style.margin = '2rem';
 
@@ -138,7 +143,7 @@ window.addEventListener('load', function () {
     imageContainer.id = cardName + ' container';
     imageContainer.style.position = 'relative';
     imageContainer.style.display = 'inline-block';
-    imageContainer.style.border = '0.25rem solid trasnparent';
+    imageContainer.style.border = CARD_BORDER_SIZE;
 
     img.id = cardName;
     img.classList.add('card');
