@@ -2,6 +2,8 @@
 
 program to keep track of the cards while playing the game
 
+accessible at https://sandrinopatrulescu.github.io/66-cards-tracker/
+
 ### TODOs:
 
 * undo/redo (w/ timestamp and description list)
